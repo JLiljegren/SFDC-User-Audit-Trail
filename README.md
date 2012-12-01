@@ -15,7 +15,7 @@ Changes to the following fields are currently tracked:
 * Email
 
 ##Known limitations
-For known limitations, see Issues area
+For known limitations, see Issues[1] area
 
 #Background (What are we trying to solve here?)
 
@@ -28,3 +28,4 @@ When a User record is created or modified, have an Apex trigger create an audit 
 ##Long version
 _Coming Soon<TM>_
 
+[1] https://github.com/JLiljegren/SFDC-User-Audit-Trail/issues
