@@ -55,7 +55,7 @@ public class UserTriggerHandler {
     //---------------------------------------------------------------------------
 	@future
 	private static void logUserUpdates(String jsonStr) {
-        
+
         List<User> oldUsers = (List<User>)json.deserialize(jsonStr, List<User>.class);
 		List<User_Audit_Trail__c> userTrails = new List<User_Audit_Trail__c>();
 
