@@ -117,6 +117,8 @@
         <columns>Modified_User__c</columns>
         <columns>Type_Of_Operation__c</columns>
         <columns>Modified_Field__c</columns>
+        <columns>Old_Value__c</columns>
+        <columns>New_Value__c</columns>
         <columns>Old_Value_ID__c</columns>
         <columns>New_Value_ID__c</columns>
         <columns>CREATEDBY_USER</columns>
