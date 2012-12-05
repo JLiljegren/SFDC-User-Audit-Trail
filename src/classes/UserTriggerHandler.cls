@@ -9,7 +9,7 @@ public class UserTriggerHandler {
     // On after insert trigger method
     //---------------------------------------------------------------------------
     public void OnAfterInsert(List<User> newRecords) {
-        logUserInserts(newRecords);
+        logUserInserts(json.serialize(newRecords));
     }
     
     //---------------------------------------------------------------------------
@@ -28,7 +28,9 @@ public class UserTriggerHandler {
     //---------------------------------------------------------------------------
     // Inserts one User_Audit_Trail__c record for each user created
     //---------------------------------------------------------------------------
-	private void logUserInserts(List<User> newUsers) {
+    @future
+	private static void logUserInserts(String jsonStr) {
+        List<User> newUsers = (List<User>)json.deserialize(jsonStr, List<User>.class);
         List<User_Audit_Trail__c> userTrails = new List<User_Audit_Trail__c>();
 		for ( User newRec : newUsers ) {
         	userTrails.add( newAuditTrail(newRec.Id, 'N/A', 'Insert', 'N/A', 'N/A') );

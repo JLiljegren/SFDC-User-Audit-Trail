@@ -22,19 +22,11 @@ public class UserTriggerHandler_Test {
         System.assertNotEquals(null, outUsers);
         System.assertEquals(MAX_NBR_USERS, outUsers.size());
 
+		Test.StopTest();
+
         // Get the new user's ID and make sure
         // there was an audit trail record created for each
-        List<User_Audit_Trail__c> trails = new List<User_Audit_Trail__c>();
-        trails = [select Id,
-                  		 Modified_User__c,
-                 		 Type_Of_Operation__c
-                  from User_Audit_Trail__c
-                  where Modified_User__c in :outUsers and
-                	    Type_Of_Operation__c = 'Insert'];
-        
-        // There should be one and only one Audit Trail record
-        System.assertEquals(MAX_NBR_USERS, trails.size());
-		Test.StopTest();
+        checkTrails(outUsers, 'Insert', 'N/A', MAX_NBR_USERS);
     }
 
     static testmethod void updateLastname() {
