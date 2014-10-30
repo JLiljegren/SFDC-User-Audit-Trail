@@ -1,0 +1,38 @@
+<apex:page standardController="User" extensions="UserHistoryExtension" showHeader="false" sidebar="false" >
+    <head>
+        <!-- Need to set this using the head and title tags because we're using
+          -- showHeader="false". Bug? -->
+        <TITLE>Field History: {!IF(urlParamAllUsers, "All Users", usrFullInfo.Name)}</TITLE>
+    </head>
+
+    <apex:pageBlock rendered="{!IF( historyCount > 0, true, false)}">
+        <apex:pageBlockTable id="userHistoryTable" value="{!historyWrapperList}" var="hist" rows="{!IF( AND(historyCount > 5, NOT(urlParamAllLines)), 6, historyCount+1)}">
+            <apex:column headerValue="Date" value="{!hist.timeStamp}" title="{!hist.timeStampFull}"/>
+            <apex:column headerValue="Running User" >
+                <apex:outputText escape="false" value="{!hist.runningUserFancy}" />
+            </apex:column>
+            <apex:column headerValue="User Modified" rendered="{!urlParamAllUsers}">
+                <apex:outputText escape="false" value="{!hist.modifiedUserFancy}" />
+            </apex:column>
+            <apex:column headerValue="User Field" >
+                <apex:outputText escape="false" value="{!hist.fieldChanged}" />
+            </apex:column>
+            <apex:column headerValue="Changed From" >
+                <apex:outputText escape="false" value="{!hist.fieldOldValue}" />
+            </apex:column>
+            <apex:column headerValue="Changed To" >
+                <apex:outputText escape="false" value="{!hist.fieldNewValue}" />
+            </apex:column>
+        </apex:pageBlockTable>
+
+        <!-- If there are more than 5 entries, show a link to the full report -->
+        <apex:form rendered="{!IF( AND(historyCount > 5, NOT(urlParamAllLines)), true, false)}" >
+            <apex:commandLink action="{!gotoFullReport}" value="Show All ({!historyCount})" title="Click to go to the full history report for this user." target="_blank"/>
+        </apex:form>
+    </apex:pageBlock>
+
+    <apex:pageBlock rendered="{!IF( historyCount < 1, true, false)}">
+        No history records to display
+    </apex:pageBlock>
+
+</apex:page>
