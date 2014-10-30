@@ -1,9 +1,9 @@
 public class UserTriggerHandler {
-    //---------------------------------------------------------------------------    
+    //---------------------------------------------------------------------------
     // On before insert trigger method
     //---------------------------------------------------------------------------
     public void OnBeforeInsert(List<User> newRecords) {
-	} 
+    }
 
     //---------------------------------------------------------------------------
     // On after insert trigger method
@@ -11,7 +11,7 @@ public class UserTriggerHandler {
     public void OnAfterInsert(List<User> newRecords) {
         logUserInserts(json.serialize(newRecords));
     }
-    
+
     //---------------------------------------------------------------------------
     // On before update trigger method
     //---------------------------------------------------------------------------
@@ -29,13 +29,13 @@ public class UserTriggerHandler {
     // Inserts one User_Audit_Trail__c record for each user created
     //---------------------------------------------------------------------------
     @future
-	private static void logUserInserts(String jsonStr) {
+    private static void logUserInserts(String jsonStr) {
         List<User> newUsers = (List<User>)json.deserialize(jsonStr, List<User>.class);
         List<User_Audit_Trail__c> userTrails = new List<User_Audit_Trail__c>();
-		for ( User newRec : newUsers ) {
-        	userTrails.add( newAuditTrail(newRec.Id, 'N/A', 'Insert', 'N/A', 'N/A') );
+        for ( User newRec : newUsers ) {
+            userTrails.add( newAuditTrail(newRec.Id, 'N/A', 'Insert', 'N/A', 'N/A') );
         }
-        
+
         if ( userTrails != null && userTrails.size() > 0 ) {
             insert userTrails;
         }
@@ -55,30 +55,30 @@ public class UserTriggerHandler {
     // @input: List of User records, serialized via json.serialize()
     // @output: N/A
     //---------------------------------------------------------------------------
-	@future
-	private static void logUserUpdates(String jsonStr) {
+    @future
+    private static void logUserUpdates(String jsonStr) {
 
         List<User> oldUsers = (List<User>)json.deserialize(jsonStr, List<User>.class);
-		List<User_Audit_Trail__c> userTrails = new List<User_Audit_Trail__c>();
+        List<User_Audit_Trail__c> userTrails = new List<User_Audit_Trail__c>();
 
-		Map<Id, User> newUsers = new Map<Id, User>([select id,
+        Map<Id, User> newUsers = new Map<Id, User>([select id,
                                                         ManagerId,
-														ProfileId,
-                                           		  		UserRoleId,
-                                           		  		FirstName,
-                                           		  		LastName,
-                                           		  		Username,
-                                           		  		Email,
-                                                    	IsActive
+                                                        ProfileId,
+                                                        UserRoleId,
+                                                        FirstName,
+                                                        LastName,
+                                                        Username,
+                                                        Email,
+                                                        IsActive
                                                     from user
                                                     where id in :oldUsers]);
-		for ( User oldRec : oldUsers ) {
+        for ( User oldRec : oldUsers ) {
             User newRec = newUsers.get(oldRec.Id);
-            
+
             if ( newRec.ManagerId != oldRec.ManagerId ) {
                 userTrails.add( newAuditTrail(newRec.Id, 'Manager', 'Update', oldRec.ManagerId, newRec.ManagerId) );
             }
-			if ( newRec.ProfileId != oldRec.ProfileId ) {
+            if ( newRec.ProfileId != oldRec.ProfileId ) {
                 userTrails.add( newAuditTrail(newRec.Id, 'Profile ID', 'Update', oldRec.ProfileId, newRec.ProfileId) );
             }
             if ( newRec.UserRoleId != oldRec.UserRoleId ) {
@@ -109,19 +109,19 @@ public class UserTriggerHandler {
     // Creates a new instance of User_Audit_Trail__c
     // Does NOT issue any DML
     //---------------------------------------------------------------------------
-	private static User_Audit_Trail__c newAuditTrail(ID modUser,
+    private static User_Audit_Trail__c newAuditTrail(ID modUser,
                                                      String field,
-                          					  		 String operation,
-                          					  		 String oldVal,
-                          					  		 String newVal) {
+                                                     String operation,
+                                                     String oldVal,
+                                                     String newVal) {
 
-		User_Audit_Trail__c userTrail = new User_Audit_Trail__c();
+        User_Audit_Trail__c userTrail = new User_Audit_Trail__c();
         userTrail.Modified_User__c = modUser;
         userTrail.Modified_Field__c = field;
         userTrail.Type_Of_Operation__c = operation;
-		userTrail.Old_Value__c = oldVal;
-		userTrail.New_Value__c = newVal;
+        userTrail.Old_Value__c = oldVal;
+        userTrail.New_Value__c = newVal;
 
-		return userTrail;
+        return userTrail;
     }
 }
